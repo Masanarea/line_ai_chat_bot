@@ -36,9 +36,10 @@ async function textEventHandler(event: WebhookEvent) {
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+    const bodyText = await request.text()
     if (
         !validateSignature(
-            await request.text(),
+            bodyText,
             config.channelSecret || '',
             request.headers.get('x-line-signature') || ''
         )
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         })
     }
 
-    const events: WebhookEvent[] = JSON.parse(await request.text()).events
+    const events: WebhookEvent[] = JSON.parse(bodyText).events
     await Promise.all(
         events.map(async (event: WebhookEvent) => {
             try {
