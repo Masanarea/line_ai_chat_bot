@@ -65,5 +65,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             }
         })
     )
-    return NextResponse.next()
+    return NextResponse.json({
+        status: 200,
+    })
 }
