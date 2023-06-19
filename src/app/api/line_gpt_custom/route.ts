@@ -24,6 +24,9 @@ const line_config = {
     channelSecret: env.CHANNEL_SECRET || '',
 }
 
+// カルーセルテンプレート
+import createCarouselTemplate from './carousel'
+
 // LINE Messaging APIにアクセスするためのクライアントを設定
 const client = new Client(line_config)
 
@@ -32,6 +35,24 @@ const openai_config = new Configuration({
     apiKey: env.OPENAI_API_KEY,
 })
 const openai = new OpenAIApi(openai_config)
+
+// 特定のキーワードが送信されたときに、LINE Messaging API のカルーセルテンプレートを返します
+async function carouselEventHandler(event: WebhookEvent) {
+    if (event.type !== 'message' || event.message.type !== 'text') {
+        return
+    }
+
+    // Check if the user sent the keyword to trigger the carousel
+    if (event.message.text !== 'カールセル') {
+        return
+    }
+
+    // Create the carousel using the imported function
+    const carousel = createCarouselTemplate()
+
+    await client.replyMessage(event.replyToken, carousel)
+    await carouselEventHandler(event)
+}
 
 const chatGptHandler = async (text: string): Promise<string> => {
     const errorMessage = 'エラーが発生したためもう一度やり直してください'

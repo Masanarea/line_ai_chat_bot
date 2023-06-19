@@ -58,3 +58,5 @@ const createCarouselTemplate = (): FlexMessage => {
 
     return message
 }
+
+export default createCarouselTemplate
