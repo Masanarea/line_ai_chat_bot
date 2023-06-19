@@ -49,9 +49,14 @@ async function carouselEventHandler(event: WebhookEvent) {
     }
 
     // Create the carousel using the imported function
-    const carousel = createCarouselTemplate()
+    // const carousel = createCarouselTemplate()
+    const { replyToken } = event
 
-    await client.replyMessage(event.replyToken, carousel)
+    // うまくいかないので、一旦テストを行う
+    await client.replyMessage(replyToken, [
+        { type: 'text', text: '第一のメッセージ' },
+        { type: 'text', text: '第二のメッセージ' },
+    ])
 }
 
 const chatGptHandler = async (text: string): Promise<string> => {
