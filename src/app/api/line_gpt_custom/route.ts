@@ -38,12 +38,13 @@ const openai = new OpenAIApi(openai_config)
 
 // 特定のキーワードが送信されたときに、LINE Messaging API のカルーセルテンプレートを返します
 async function carouselEventHandler(event: WebhookEvent) {
+    const keyword = 'カールセル'
     if (event.type !== 'message' || event.message.type !== 'text') {
         return
     }
 
     // Check if the user sent the keyword to trigger the carousel
-    if (event.message.text !== 'カールセル') {
+    if (event.message.text !== keyword) {
         return
     }
 
@@ -51,7 +52,6 @@ async function carouselEventHandler(event: WebhookEvent) {
     const carousel = createCarouselTemplate()
 
     await client.replyMessage(event.replyToken, carousel)
-    await carouselEventHandler(event)
 }
 
 const chatGptHandler = async (text: string): Promise<string> => {
@@ -110,6 +110,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         events.map(async (event: WebhookEvent) => {
             try {
                 await textEventHandler(event)
+                await carouselEventHandler(event)
             } catch (error: any) {
                 console.error(error)
                 return NextResponse.json({
